@@ -158,8 +158,14 @@ class HMC_models(object):
 					out[i][j]=1
 			#exit(0)
 			return out
-			
-		with tf.device('/gpu:0'):
+	
+		if tf.test.gpu_device_name():
+			print('Default GPU Device: {}'.format(tf.test.gpu_device_name()))
+			device = '/gpu:0'
+		else:
+			print("No GPU, using CPU")
+			device = None
+		with tf.device(device):
 			holder_list = self.Main_model()  #------------holder_list: [model_input, model_output, loss]
 			# optimization
 			optimizer = tf.train.AdamOptimizer(learning_rate=self.hparams['lr'])
